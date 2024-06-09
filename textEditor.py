@@ -1,8 +1,27 @@
 from tkinter import *
 from tkinter import ttk
 
-def donothing():
-   ...
+def New_file():
+    ...
+    
+def Open_file():
+    ...
+    
+def Save_file():
+    ...
+    
+def Save_as_file():
+    ...
+
+def Help_window():
+    helpWindow = Toplevel(root)
+ 
+    helpWindow.title("Help")
+ 
+    helpWindow.geometry("200x200")
+ 
+    # Label(helpWindow, 
+    #       text ="This is a new window").pack()
 
 def toggle_wrap():
     if wrap_var.get():
@@ -24,16 +43,16 @@ frm.rowconfigure(0, weight=1)
 
 menubar = Menu(root)
 filemenu = Menu(menubar, tearoff=0)
-filemenu.add_command(label="New", command=donothing)
-filemenu.add_command(label="Open", command=donothing)
-filemenu.add_command(label="Save", command=donothing)
+filemenu.add_command(label="New", command=New_file)
+filemenu.add_command(label="Open", command=Open_file)
+filemenu.add_command(label="Save", command=Save_file)
+filemenu.add_command(label="Save as", command=Save_as_file)
 filemenu.add_separator()
 filemenu.add_command(label="Exit", command=root.quit)
 menubar.add_cascade(label="File", menu=filemenu)
 
 helpmenu = Menu(menubar, tearoff=0)
-helpmenu.add_command(label="Help", command=donothing)
-helpmenu.add_command(label="About", command=donothing)
+helpmenu.add_command(label="Help", command=Help_window)
 
 wrap_var = BooleanVar()
 wrap_var.set(True)
