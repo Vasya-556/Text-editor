@@ -1,17 +1,81 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import filedialog as fd
+
+selected_file = None
+file_saved = False
 
 def New_file():
-    ...
+    global file_saved
+    if file_saved:
+        text.delete('1.0','end')
+    else:
+        Save_window()
     
+def Save_window():
+    save_window = Toplevel(root)
+    save_window.title("Notepad")
+    
+    save_window.geometry("300x150+500+300")
+    
+    label = Label(save_window, text="Do you want to save changes?", pady=20)
+    label.pack()
+
+    def save():
+        save_window.destroy()
+    
+    def dont_save():
+        save_window.destroy()
+    
+    def cancel():
+        save_window.destroy()
+    
+    button_one = Button(save_window, text="Save", command=save)
+    button_one.pack(side=LEFT, padx=20)
+    
+    button_two = Button(save_window, text="Don't save", command=dont_save)
+    button_two.pack(side=LEFT, padx=20)
+    
+    button_three = Button(save_window, text="Cancel", command=cancel)
+    button_three.pack(side=LEFT, padx=20)
+
 def Open_file():
-    ...
+    global selected_file
+    filetypes = (
+        ('text files', '*.txt'),
+        ('All files', '*.*')
+    )
+
+    file = fd.askopenfile(filetypes=filetypes)
+    
+    if file is not None:  
+        selected_file = file.name
+        text.delete('1.0', 'end')  
+        content = ''.join(file.readlines())
+        text.insert('1.0', content)
     
 def Save_file():
-    ...
+    global selected_file
+    global file_saved
+    if selected_file is not None:  
+        with open(selected_file, 'w') as file:
+            file.write(text.get('1.0', 'end-1c'))
+        file_saved = True
+    else: 
+        Save_as_file()
     
 def Save_as_file():
-    ...
+    global selected_file
+    global file_saved
+    filetypes = (
+        ('text files', '*.txt'),
+        ('All files', '*.*')
+    )
+    file = fd.asksaveasfile(filetypes=filetypes, defaultextension='.txt')
+    
+    if file is not None:  
+        selected_file = file.name
+        file_saved = True
 
 def Help_window():
     helpWindow = Toplevel(root)
@@ -28,6 +92,10 @@ def toggle_wrap():
         text.config(wrap='word')
     else:
         text.config(wrap='none')
+
+def text_edited(e):
+    global file_saved
+    file_saved = False
 
 root = Tk()
 root.title("Text Editor")
@@ -62,6 +130,7 @@ menubar.add_cascade(label="Help", menu=helpmenu)
 
 text = Text(frm, height = 5, width = 52, wrap='word')
 text.grid(column=0, row=0,sticky=(N, S, E, W))
+text.bind('<Key>',text_edited)
 
 scrollbar = Scrollbar(frm, command=text.yview)
 scrollbar.grid(column=1,row=0, sticky=(N, S, E, W))
