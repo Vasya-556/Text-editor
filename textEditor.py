@@ -129,7 +129,16 @@ def quit(event=None):
         root.destroy()
     else:
         Save_window()
-        ...
+        root.destroy()
+
+def cut_text(event=None):
+    text.event_generate('<Control-x>')
+
+def copy_text(event=None):
+    text.event_generate('<Control-c>')
+
+def paste_text(event=None):
+    text.event_generate('<Control-v>')
 
 root = Tk()
 root.title("Text Editor")
@@ -156,9 +165,9 @@ menubar.add_cascade(label="File", menu=filemenu)
 editmenu = Menu(menubar, tearoff=0)
 editmenu.add_command(label='Undo', command=Undo)
 editmenu.add_command(label='Redo', command=Redo)
-editmenu.add_command(label='Cut', command=None)
-editmenu.add_command(label='Copy', command=None)
-editmenu.add_command(label='Paste', command=None)
+editmenu.add_command(label='Cut', command=cut_text)
+editmenu.add_command(label='Copy', command=copy_text)
+editmenu.add_command(label='Paste', command=paste_text)
 editmenu.add_command(label='Find', command=None)
 menubar.add_cascade(label='Edit', menu=editmenu)
 
