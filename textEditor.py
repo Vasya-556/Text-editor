@@ -3,9 +3,9 @@ from tkinter import ttk
 from tkinter import filedialog as fd
 
 selected_file = None
-file_saved = False
+file_saved = True
 
-def New_file():
+def New_file(event=None):
     global file_saved
     if file_saved:
         text.delete('1.0','end')
@@ -22,9 +22,11 @@ def Save_window():
     label.pack()
 
     def save():
+        Save_file()
         save_window.destroy()
     
     def dont_save():
+        text.delete('1.0','end')
         save_window.destroy()
     
     def cancel():
@@ -39,8 +41,9 @@ def Save_window():
     button_three = Button(save_window, text="Cancel", command=cancel)
     button_three.pack(side=LEFT, padx=20)
 
-def Open_file():
+def Open_file(event=None):
     global selected_file
+    global file_saved
     filetypes = (
         ('text files', '*.txt'),
         ('All files', '*.*')
@@ -53,8 +56,9 @@ def Open_file():
         text.delete('1.0', 'end')  
         content = ''.join(file.readlines())
         text.insert('1.0', content)
+        file_saved = True
     
-def Save_file():
+def Save_file(event=None):
     global selected_file
     global file_saved
     if selected_file is not None:  
@@ -64,7 +68,7 @@ def Save_file():
     else: 
         Save_as_file()
     
-def Save_as_file():
+def Save_as_file(event=None):
     global selected_file
     global file_saved
     filetypes = (
@@ -77,7 +81,7 @@ def Save_as_file():
         selected_file = file.name
         file_saved = True
 
-def Help_window():
+def Help_window(event=None):
     helpWindow = Toplevel(root)
  
     helpWindow.title("Help")
@@ -87,15 +91,28 @@ def Help_window():
     # Label(helpWindow, 
     #       text ="This is a new window").pack()
 
-def toggle_wrap():
+def toggle_wrap(event=None):
     if wrap_var.get():
         text.config(wrap='word')
+        vertical_scrollbar.grid_remove()
     else:
         text.config(wrap='none')
+        vertical_scrollbar.grid()
 
 def text_edited(e):
     global file_saved
+    if e.state & 0x4 and e.keysym in ('n', 's', 'S', 'o', 'q', 'h', 'w'):
+        return
     file_saved = False
+
+def undo(event=None):
+    ...
+
+def redo(event=None):
+    ...
+
+def quit(event=None):
+    ...
 
 root = Tk()
 root.title("Text Editor")
@@ -116,7 +133,7 @@ filemenu.add_command(label="Open", command=Open_file)
 filemenu.add_command(label="Save", command=Save_file)
 filemenu.add_command(label="Save as", command=Save_as_file)
 filemenu.add_separator()
-filemenu.add_command(label="Exit", command=root.quit)
+filemenu.add_command(label="Exit", command=quit)
 menubar.add_cascade(label="File", menu=filemenu)
 
 helpmenu = Menu(menubar, tearoff=0)
@@ -125,7 +142,7 @@ helpmenu.add_command(label="Help", command=Help_window)
 wrap_var = BooleanVar()
 wrap_var.set(True)
 
-helpmenu.add_checkbutton(label="Wrap button", onvalue=True, offvalue=False, variable=wrap_var, command=toggle_wrap)
+helpmenu.add_checkbutton(label="Wrap words", onvalue=True, offvalue=False, variable=wrap_var, command=toggle_wrap)
 menubar.add_cascade(label="Help", menu=helpmenu)
 
 text = Text(frm, height = 5, width = 52, wrap='word')
@@ -135,7 +152,22 @@ text.bind('<Key>',text_edited)
 scrollbar = Scrollbar(frm, command=text.yview)
 scrollbar.grid(column=1,row=0, sticky=(N, S, E, W))
 
+vertical_scrollbar = Scrollbar(frm,orient='horizontal', command=text.xview)
+vertical_scrollbar.grid(column=0,row=1,sticky=(N, S, E, W))
+vertical_scrollbar.grid_remove()
+
 text.config(yscrollcommand=scrollbar.set)
+text.config(xscrollcommand=vertical_scrollbar.set)
+
+root.bind('<Control-n>',New_file)
+root.bind('<Control-s>',Save_file)
+root.bind('<Control-Shift-s>',Save_as_file)
+root.bind('<Control-o>',Open_file)
+root.bind('<Control-q>',quit)
+root.bind('<Control-h>',Help_window)
+root.bind('<Control-w>',toggle_wrap)
+root.bind('<Control-z>',undo)
+root.bind('<Control-y>',redo)
 
 root.config(menu=menubar)
 root.mainloop()
