@@ -15,7 +15,7 @@ def New_file(event=None):
     
 def Save_window():
     save_window = Toplevel(root)
-    save_window.title("TextEditor")
+    save_window.title("Quit")
     
     save_window.geometry("300x150+500+300")
     
@@ -94,12 +94,16 @@ def Help_window(event=None):
     #       text ="This is a new window").pack()
 
 def toggle_wrap(event=None):
-    if wrap_var.get():
-        text.config(wrap='word')
-        vertical_scrollbar.grid_remove()
+    if event is None:
+        if wrap_var.get():
+            text.config(wrap='word')
+            vertical_scrollbar.grid_remove()
+        else:
+            text.config(wrap='none')
+            vertical_scrollbar.grid()
     else:
-        text.config(wrap='none')
-        vertical_scrollbar.grid()
+        wrap_var.set(not wrap_var.get())
+        toggle_wrap()
 
 def text_edited(e):
     global file_saved
@@ -117,12 +121,15 @@ def Redo(event=None):
     try:
         text.edit_redo()  
     except TclError:
-        pass
-
+        pass    
 
 def quit(event=None):
-    # if messagebox.askokcancel("Quit", "Do you really want to quit?") else None
-    ...
+    global file_saved
+    if file_saved:
+        root.destroy()
+    else:
+        Save_window()
+        ...
 
 root = Tk()
 root.title("Text Editor")
