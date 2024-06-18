@@ -27,7 +27,7 @@ def handle_save_on_quit(result):
 
 def Save_window(callback):
     save_window = Toplevel(root)
-    save_window.title("Quit")
+    save_window.title("Save")
     save_window.geometry("300x150+500+300")
     
     label = Label(save_window, text="Do you want to save changes?", pady=20)
@@ -122,7 +122,34 @@ def toggle_wrap(event=None):
 
 def text_edited(e):
     global file_saved
-    if e.state & 0x4 and e.keysym in ('n', 's', 'S', 'o', 'q', 'h', 'w'):
+    # if e.state & 0x4 and e.keysym in ('n', 's', 'S', 'o', 'q', 'h', 'w'):
+    #     return
+    if e.state & 0x4 and e.keycode == 78:  
+        New_file(e)  
+        return
+    if e.state & 0x4 and e.keycode == 83:  
+        if e.state & 0x1:  
+            Save_as_file(e)
+        else:
+            Save_file(e) 
+        return
+    if e.state & 0x4 and e.keycode == 79:  
+        Open_file(e)  
+        return
+    if e.state & 0x4 and e.keycode == 81:  
+        quit(e)  
+        return
+    if e.state & 0x4 and e.keycode == 72:  
+        Help_window(e)  
+        return
+    if e.state & 0x4 and e.keycode == 87:  
+        toggle_wrap(e)  
+        return
+    if e.state & 0x4 and e.keycode == 90:  
+        Undo(e)  
+        return
+    if e.state & 0x4 and e.keycode == 89:  
+        Redo(e)  
         return
     file_saved = False
 
@@ -208,15 +235,15 @@ vertical_scrollbar.grid_remove()
 text.config(yscrollcommand=scrollbar.set)
 text.config(xscrollcommand=vertical_scrollbar.set)
 
-root.bind('<Control-n>',New_file)
-root.bind('<Control-s>',Save_file)
-root.bind('<Control-Shift-s>',Save_as_file)
-root.bind('<Control-o>',Open_file)
-root.bind('<Control-q>',quit)
-root.bind('<Control-h>',Help_window)
-root.bind('<Control-w>',toggle_wrap)
-root.bind('<Control-z>',Undo)
-root.bind('<Control-y>',Redo)
+# root.bind('<Control-78>',New_file)
+# root.bind('<Control-s>',Save_file)
+# root.bind('<Control-Shift-s>',Save_as_file)
+# root.bind('<Control-o>',Open_file)
+# root.bind('<Control-q>',quit)
+# root.bind('<Control-h>',Help_window)
+# root.bind('<Control-w>',toggle_wrap)
+# root.bind('<Control-z>',Undo)
+# root.bind('<Control-y>',Redo)
 
 root.protocol("WM_DELETE_WINDOW", quit)
 
