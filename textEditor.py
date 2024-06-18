@@ -98,16 +98,6 @@ def Save_as_file(event=None):
             f.write(text.get('1.0', 'end-1c'))
         file_saved = True
 
-def Help_window(event=None):
-    helpWindow = Toplevel(root)
- 
-    helpWindow.title("Help")
- 
-    helpWindow.geometry("200x200")
- 
-    # Label(helpWindow, 
-    #       text ="This is a new window").pack()
-
 def toggle_wrap(event=None):
     if event is None:
         if wrap_var.get():
@@ -136,9 +126,6 @@ def text_edited(e):
         return
     if e.state & 0x4 and e.keycode == 81:  
         quit(e)  
-        return
-    if e.state & 0x4 and e.keycode == 72:  
-        Help_window(e)  
         return
     if e.state & 0x4 and e.keycode == 87:  
         toggle_wrap(e)  
@@ -255,16 +242,13 @@ editmenu.add_command(label='Cut', command=cut_text, accelerator="Ctrl+X")
 editmenu.add_command(label='Copy', command=copy_text, accelerator="Ctrl+C")
 editmenu.add_command(label='Paste', command=paste_text, accelerator="Ctrl+V")
 editmenu.add_command(label='Find', command=Find_text, accelerator="Ctrl+F")
-menubar.add_cascade(label='Edit', menu=editmenu)
-
-helpmenu = Menu(menubar, tearoff=0)
-helpmenu.add_command(label="Help", command=Help_window, accelerator="Ctrl+H")
+editmenu.add_separator()
 
 wrap_var = BooleanVar()
 wrap_var.set(True)
 
-helpmenu.add_checkbutton(label="Wrap words", onvalue=True, offvalue=False, variable=wrap_var, command=toggle_wrap, accelerator="Ctrl+W")
-menubar.add_cascade(label="Help", menu=helpmenu)
+editmenu.add_checkbutton(label="Wrap words", onvalue=True, offvalue=False, variable=wrap_var, command=toggle_wrap, accelerator="Ctrl+W")
+menubar.add_cascade(label='Edit', menu=editmenu)
 
 text = Text(frm, height = 5, width = 52, wrap='word', undo=True)
 text.grid(column=0, row=0,sticky=(N, S, E, W))
