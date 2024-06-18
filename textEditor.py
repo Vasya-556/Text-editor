@@ -11,26 +11,39 @@ def New_file(event=None):
     if file_saved:
         text.delete('1.0','end')
     else:
-        Save_window()
+        Save_window(handle_save_on_new_file)
     
-def Save_window():
+def handle_save_on_new_file(result):
+    global file_saved
+    if result == 'file saved' or result == 'file not saved':
+        text.delete('1.0','end')
+        file_saved = True
+    
+def handle_save_on_quit(result):
+    global file_saved
+    if result == 'file saved' or result == 'file not saved':
+        file_saved = True
+        root.quit()
+
+def Save_window(callback):
     save_window = Toplevel(root)
     save_window.title("Quit")
-    
     save_window.geometry("300x150+500+300")
     
     label = Label(save_window, text="Do you want to save changes?", pady=20)
     label.pack()
-
+    
     def save():
         Save_file()
+        callback('file saved')
         save_window.destroy()
     
     def dont_save():
-        text.delete('1.0','end')
+        callback('file not saved')
         save_window.destroy()
     
     def cancel():
+        callback('canceled')
         save_window.destroy()
     
     button_one = Button(save_window, text="Save", command=save)
@@ -81,6 +94,8 @@ def Save_as_file(event=None):
     
     if file is not None:  
         selected_file = file.name
+        with open(selected_file, 'w') as f:
+            f.write(text.get('1.0', 'end-1c'))
         file_saved = True
 
 def Help_window(event=None):
@@ -128,8 +143,7 @@ def quit(event=None):
     if file_saved:
         root.destroy()
     else:
-        Save_window()
-        root.destroy()
+        Save_window(handle_save_on_quit)
 
 def cut_text(event=None):
     text.event_generate('<Control-x>')
@@ -203,6 +217,8 @@ root.bind('<Control-h>',Help_window)
 root.bind('<Control-w>',toggle_wrap)
 root.bind('<Control-z>',Undo)
 root.bind('<Control-y>',Redo)
+
+root.protocol("WM_DELETE_WINDOW", quit)
 
 root.config(menu=menubar)
 root.mainloop()
