@@ -1,6 +1,7 @@
 # Text-editor
 
 Simple text editor on python tkinter
+![](screenshot.png)
 
 ## Installation
 
